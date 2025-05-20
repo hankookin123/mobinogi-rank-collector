@@ -1,0 +1,43 @@
+package com.collector.rank;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.collector.controller.UpdateScheduler;
+import com.collector.dao.RankDao;
+import com.collector.mainService.SearchLoofService;
+
+@SpringBootTest
+public class UpdateSchedulerTest {
+
+	@Autowired
+    private RankDao rankDao;
+
+    @Autowired
+    private SearchLoofService searchLoofService;
+
+    @Autowired
+    private UpdateScheduler updateScheduler;
+    
+    @Test
+    public void testDbupdate() throws Exception {
+    	updateScheduler.dbUpdateSchedule();
+    	// ec2 커널링으로 db 접속하려는데 권한이 없다는 오류 지속적으로 발생.
+    }
+    
+    @Test
+    public void searchLoofServiceTest() throws Exception {
+    	searchLoofService.setPageCount(2);
+    	searchLoofService.dbUpdate();
+    }
+    
+    @Value("${COOKIE_INFO}") private String test_cookie_info;
+    
+    @Test
+    public void testCookieInfo() {
+    	System.out.println("cookie_text : " + test_cookie_info);
+    	
+    }
+}

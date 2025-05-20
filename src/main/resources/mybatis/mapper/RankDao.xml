@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.collector.dao.RankDao">
+  
+  <insert id="deianInsert">
+  	INSERT INTO deian_server(c_p_rank, c_name, class_id, c_power) 
+  	VALUES
+  	<foreach collection="list" item="item" separator=",">
+  		(#{item.rank}, #{item.charName}, #{item.clazz}, #{item.power})
+  	</foreach>
+  </insert>
+</mapper>
