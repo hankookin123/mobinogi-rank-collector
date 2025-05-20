@@ -28,9 +28,15 @@ public class UpdateSchedulerTest {
     }
     
     @Test
-    public void searchLoofServiceTest() throws Exception {
-    	searchLoofService.setPageCount(2);
-    	searchLoofService.dbUpdate();
+    public void searchLoofServiceTest() {
+    	try {
+    		searchLoofService.setPageCount(2);
+        	rankDao.generateDailyPowerStatsTest();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	System.out.println("- - - - -  테스트 종료  - - - - -");
     }
     
     @Value("${COOKIE_INFO}") private String test_cookie_info;
