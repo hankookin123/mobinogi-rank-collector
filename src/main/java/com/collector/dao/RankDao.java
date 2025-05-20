@@ -11,4 +11,6 @@ import com.collector.dto.rank.RankingListDto;
 public interface RankDao {
 	
 	public void deianInsert(@Param("list") List<RankingListDto> list);
+	public void generateDailyPowerStats();
+	public void generateDailyPowerStatsTest();
 }
