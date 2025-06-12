@@ -26,8 +26,9 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 	
 	// 겟터 셋터
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
 	
 	// 톰캣, jsp, jstl
 	runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'

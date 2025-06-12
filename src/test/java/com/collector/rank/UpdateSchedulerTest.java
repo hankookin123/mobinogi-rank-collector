@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.collector.controller.UpdateScheduler;
+import com.collector.UpdateScheduler;
 import com.collector.dao.RankDao;
 import com.collector.mainService.SearchLoofService;
 
