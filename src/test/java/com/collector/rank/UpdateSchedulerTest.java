@@ -4,12 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.collector.UpdateScheduler;
 import com.collector.dao.RankDao;
 import com.collector.mainService.SearchLoofService;
 
+
+// 프로파일 강제 활성화
 @SpringBootTest
+@ActiveProfiles("device-n150")
 public class UpdateSchedulerTest {
 
 	@Autowired
@@ -46,7 +50,7 @@ public class UpdateSchedulerTest {
     
     @Test
     public void testCookieInfo() {
-    	System.out.println("cookie_text : " + test_cookie_info);
+    	updateScheduler.dbUpdateSchedule();
     	
     }
 }

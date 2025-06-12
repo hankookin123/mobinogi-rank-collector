@@ -55,6 +55,9 @@ dependencies {
 	implementation 'org.apache.sshd:sshd-core:2.13.1'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	
+	//gpt가 새로 크롤링 짬
+	implementation 'org.apache.httpcomponents.client5:httpclient5'
+	
 }
 
 tasks.named('test') {
