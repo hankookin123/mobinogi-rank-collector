@@ -1,0 +1,66 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.4'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.mobinogi'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	// junit
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+	
+	// 겟터 셋터
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+	
+	// 톰캣, jsp, jstl
+	runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	implementation 'javax.servlet:jstl:1.2'
+	
+	// JSON 파싱을 위해 Jackson 라이브러리
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+	
+	// HTML 파싱 라이브러리 Jsoup
+	implementation 'org.jsoup:jsoup:1.17.2'
+	
+	// Maria DB
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.3'
+	
+	// 마이바티스
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	
+	// env 대신 AmazonSSM 사용을 위한 의존성
+	implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.0.4')
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
+	
+	//ssh 터널링 jsch 라이브러리 > Apache Mina SSHD로 변경
+	implementation 'org.apache.sshd:sshd-core:2.13.1'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	
+	// Playwright 라이브러리
+	implementation 'com.microsoft.playwright:playwright:1.44.0'
+	
+	
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
