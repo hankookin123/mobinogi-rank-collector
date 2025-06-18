@@ -42,11 +42,11 @@ public class UpdateSchedulerTest {
     	System.out.println("- - - - -  테스트 종료  - - - - -");
     }
     
-    @Value("${COOKIE_INFO}") private String test_cookie_info;
+    @Value("${COOKIE_INFO}") private String cookie_info;
     
     @Test
     public void testCookieInfo() {
-    	System.out.println("cookie_text : " + test_cookie_info);
+    	System.out.println("cookie_text : " + cookie_info);
     	
     }
 }

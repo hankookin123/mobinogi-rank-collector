@@ -47,7 +47,7 @@ public class SearchLoofService {
 		
 		for (Integer code : ClassCode.직업_코드맵.values()) {
 			List<RankingListDto> rankingList = new ArrayList<>();
-			for (int i = 0; i < pageCount; i++) {
+			for (int i = 1; i <= pageCount; i++) {
 				try {
 					rankCollectService.rankCollect(1, i, 1, code, null, rankingList);
 					total_search++;
