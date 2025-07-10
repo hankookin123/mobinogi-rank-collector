@@ -1,5 +1,6 @@
 package com.collector;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class UpdateScheduler {
 	
 	private final SearchLoofService searchLoofService;
