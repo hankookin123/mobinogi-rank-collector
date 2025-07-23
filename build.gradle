@@ -60,6 +60,8 @@ dependencies {
 	// Playwright 라이브러리
 	implementation 'com.microsoft.playwright:playwright:1.44.0'
 	
+	// 셀레니움
+	implementation("org.seleniumhq.selenium:selenium-java:4.34.0")
 	
 }
 

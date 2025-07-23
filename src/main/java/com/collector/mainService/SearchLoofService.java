@@ -1,12 +1,10 @@
 package com.collector.mainService;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.collector.dao.RankDao;
@@ -51,7 +49,7 @@ public class SearchLoofService {
 				try {
 					rankCollectService.rankCollect(1, i, 1, code, null, rankingList);
 					total_search++;
-					Thread.sleep(random.nextInt(500)+2500);
+					Thread.sleep(12000);
 					System.out.println("총 횟수 : " + total_search + "  /  " 
 							+ ClassCode.코드_직업맵.get(code) + " 페이지 : " + i);
 				} catch (InterruptedException  e) {

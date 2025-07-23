@@ -46,6 +46,7 @@ public class SshTunnelConfig {
     public DataSource dataSource() throws Exception {
         // 1. SSH 클라이언트 설정
         client = SshClient.setUpDefaultClient();
+        client.getProperties().put("idle-timeout", 1800000);
         client.start();
 
         // 2. 키 로딩 (패스프레이즈 지원)
