@@ -20,7 +20,7 @@ public class UpdateScheduler {
 	@Scheduled(cron = "0 0 4 * * *", zone = "Asia/Seoul")
 	public void dbUpdateSchedule() {
 		try {
-			searchLoofService.dbUpdate();
+			searchLoofService.collectRank();
 			rankDao.generateDailyPowerStats();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

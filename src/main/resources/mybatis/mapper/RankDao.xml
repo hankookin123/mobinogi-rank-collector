@@ -12,6 +12,10 @@
   	</foreach>
   </insert>
   
+  <insert id="userInsert">
+  	<!-- INSERT INTO 유저정보 인서트 db 생성하고 쿼리 짜야함. -->
+  </insert>
+  
   <!-- 프로시저 실행 하려면 statementType="CALLABLE"  넣어줘야한다. -->
   <select id="generateDailyPowerStats" statementType="CALLABLE">
   	{call generate_daily_power_stats()}
