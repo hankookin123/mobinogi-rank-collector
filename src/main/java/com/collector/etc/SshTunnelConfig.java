@@ -44,27 +44,28 @@ public class SshTunnelConfig {
 
     @Bean
     public DataSource dataSource() throws Exception {
-        // 1. SSH 클라이언트 설정
-        client = SshClient.setUpDefaultClient();
-        client.start();
-
-        // 2. 키 로딩 (패스프레이즈 지원)
-        KeyPairResourceLoader loader = SecurityUtils.getKeyPairResourceParser();
-        Path path = Paths.get(sshPrivateKey);
-        Collection<KeyPair> keys = loader.loadKeyPairs(null, path,
-                FilePasswordProvider.of((sshKeyPassphrase == null || sshKeyPassphrase.isBlank()) ? null : sshKeyPassphrase));
-
-        // 3. 세션 생성 및 인증
-        session = client.connect(sshUser, sshHost, sshPort)
-                .verify(10, TimeUnit.SECONDS)
-                .getSession();
-        session.addPublicKeyIdentity(keys.iterator().next());
-        session.auth().verify(10, TimeUnit.SECONDS);
-
-        // 4. 포트 포워딩 설정
-        SshdSocketAddress localAddress = new SshdSocketAddress("localhost", sshLocalPort);
-        SshdSocketAddress remoteAddress = new SshdSocketAddress(sshRemoteHost, sshRemotePort);
-        session.startLocalPortForwarding(localAddress, remoteAddress);
+//        // 1. SSH 클라이언트 설정
+//        client = SshClient.setUpDefaultClient();
+//        client.getProperties().put("idle-timeout", 1800000);
+//        client.start();
+//
+//        // 2. 키 로딩 (패스프레이즈 지원)
+//        KeyPairResourceLoader loader = SecurityUtils.getKeyPairResourceParser();
+//        Path path = Paths.get(sshPrivateKey);
+//        Collection<KeyPair> keys = loader.loadKeyPairs(null, path,
+//                FilePasswordProvider.of((sshKeyPassphrase == null || sshKeyPassphrase.isBlank()) ? null : sshKeyPassphrase));
+//
+//        // 3. 세션 생성 및 인증
+//        session = client.connect(sshUser, sshHost, sshPort)
+//                .verify(10, TimeUnit.SECONDS)
+//                .getSession();
+//        session.addPublicKeyIdentity(keys.iterator().next());
+//        session.auth().verify(10, TimeUnit.SECONDS);
+//
+//        // 4. 포트 포워딩 설정
+//        SshdSocketAddress localAddress = new SshdSocketAddress("localhost", sshLocalPort);
+//        SshdSocketAddress remoteAddress = new SshdSocketAddress(sshRemoteHost, sshRemotePort);
+//        session.startLocalPortForwarding(localAddress, remoteAddress);
 
         // 5. DataSource 생성
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

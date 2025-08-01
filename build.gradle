@@ -33,7 +33,9 @@ dependencies {
 	// 톰캣, jsp, jstl
 	runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-	implementation 'javax.servlet:jstl:1.2'
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.1.39'
 	
 	// JSON 파싱을 위해 Jackson 라이브러리
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
@@ -58,6 +60,8 @@ dependencies {
 	// Playwright 라이브러리
 	implementation 'com.microsoft.playwright:playwright:1.44.0'
 	
+	// 셀레니움
+	implementation("org.seleniumhq.selenium:selenium-java:4.34.0")
 	
 }
 

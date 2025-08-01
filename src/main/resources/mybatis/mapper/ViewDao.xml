@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.collector.dao.ViewDao">
+
+    <select id="dailyPowerSelect" resultType="com.collector.dto.rank.DailyPowerDto">
+        SELECT
+	        id,
+	        data_date,
+	        server_id,
+	        job_id,
+	        power_top,
+	        power_bottom,
+	        power_median,
+	        power_average,
+	        power_total,
+	        power_var,
+	        power_sd
+	    FROM daily_power
+	    WHERE data_date = #{baseTime}
+    </select>
+</mapper>

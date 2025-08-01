@@ -13,4 +13,5 @@ public interface RankDao {
 	public void deianInsert(@Param("list") List<RankingListDto> list);
 	public void generateDailyPowerStats();
 	public void generateDailyPowerStatsTest();
+	public void userInsert(@Param("dto") RankingListDto dto);
 }

@@ -7,13 +7,30 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.collector.dao.RankDao;
+import com.collector.dto.rank.RankingListDto;
+import com.collector.mainService.RankCollectServiceSelenium;
+import com.collector.mainService.SearchLoofService;
 
 @SpringBootTest
 public class CrawlingConnectionTest {
 	
 	@Value("${COOKIE_INFO}") private String cookie_info;
+	
+	@Autowired
+	private RankCollectServiceSelenium rankCollectServiceSelenium;
+	
+	@Mock
+	private RankDao dao;
+
+	@InjectMocks
+	private SearchLoofService searchLoofService;
 	
 	@Test
 	public void fetchRankPage51() {
@@ -29,7 +46,7 @@ public class CrawlingConnectionTest {
 	        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	        conn.setRequestProperty("Cookie", cookie_info);
 	        // POST 파라미터 작성
-	        String postData = "t=1&pageno=50&s=1&c=2&search=";
+	        String postData = "t=1&pageno=0&s=0&c=0&search="+"연우야";
 	        try (OutputStream os = conn.getOutputStream()) {
 	            byte[] input = postData.getBytes("UTF-8");
 	            os.write(input, 0, input.length);
@@ -51,6 +68,23 @@ public class CrawlingConnectionTest {
 	        e.printStackTrace();
 	    }
 	}
-
+	
+	@Test
+	public void 셀레니움분리() {
+		int t = 1;         // 전투력 타입?
+        int pageno = 0;
+        int s = 0;         // 예: 서버 코드 (ex. 데이안)
+        int c = 0;// 예: 직업 코드 (ex. 전사)
+        String search = "연우야";
+        
+        RankingListDto dto = rankCollectServiceSelenium.userInfo(t, pageno, s, c, search);
+        System.out.println("검색 결과: " + dto.getCharName() + " / Power: " + dto.getPower());
+	}
+	
+	@Test
+	public void 서치루프_셀레니움() {
+		
+		searchLoofService.collectRank();
+	}
 
 }
