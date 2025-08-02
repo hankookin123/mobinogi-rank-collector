@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
-@Component
+//@Component
 public class SeleniumDriverManager {
 	// 27회 검색하면 재시작됨. 유저 직접 검색 전용 셀레니움
 	private WebDriver webDriver;
     private final AtomicInteger requestCount = new AtomicInteger(0);
     private final int MAX_REQUESTS = 27; // 27번 요청마다 재시작
 	 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         launchBrowser();
     }

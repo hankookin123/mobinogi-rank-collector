@@ -77,8 +77,8 @@ public class CrawlingConnectionTest {
         int c = 0;// 예: 직업 코드 (ex. 전사)
         String search = "연우야";
         
-        RankingListDto dto = rankCollectServiceSelenium.userInfo(t, pageno, s, c, search);
-        System.out.println("검색 결과: " + dto.getCharName() + " / Power: " + dto.getPower());
+        //RankingListDto dto = rankCollectServiceSelenium.userInfo(t, pageno, s, c, search);
+        //System.out.println("검색 결과: " + dto.getCharName() + " / Power: " + dto.getPower());
 	}
 	
 	@Test
