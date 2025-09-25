@@ -14,6 +14,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dao.RankDao;
@@ -22,12 +23,13 @@ import com.collector.etc.ClassCode;
 
 // DB에 등록하는곳
 @Service
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class SearchLoofService {
 	
 	private RankCollectService rankCollectService;
 	private RankDao dao;
 	private WebDriver webDriver = null;
-	
+	private int errQuit = 0;
 	
 	// 이렇게 객체를 new로 안만들고 파라미터로 받아오는 것을 의존성 주입이라하고,
 	// 테스트 용이성,결합도 감소 같은 설명들은 rankdao랑 연결시킨 것이 아니라 '받아서 사용한다'라고 코드를 짜서다.
@@ -44,7 +46,7 @@ public class SearchLoofService {
 	
 	public WebDriver getDriver() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless"); // 필요 시 제거해 디버깅 가능
+        //options.addArguments("--headless"); // 필요 시 제거해 디버깅 가능
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("user-agent=Mozilla/5.0"); 
@@ -56,10 +58,62 @@ public class SearchLoofService {
 	}
 	
 	public WebDriver restartDriver() {
-		webDriver.quit();
-		getDriver();
-		return webDriver;
+	    int maxRetries = 3;
+	    while (true) {
+	        try {
+	            if (webDriver != null) {
+	                // 에러 횟수에 비례해 대기
+	                Thread.sleep(errQuit * 10000L);
+	                
+	                webDriver.quit();
+	                errQuit = 0;       // 정상 종료 시 초기화
+	                Thread.sleep(7000L);  // 추가 대기
+	            }
+	            // 새 드라이버 할당
+	            webDriver = getDriver();
+	            return webDriver;  // 성공 시 종료
+	        } catch (InterruptedException e) {
+	            Thread.currentThread().interrupt();
+	            System.out.println("Interrupted during restartDriver");
+	            // 인터럽트 시 종료하거나 재시도 여부 검토 가능
+	            return webDriver;
+	        } catch (Exception e) {
+	            errQuit++;
+	            System.out.println("WebDriver 종료 중 오류 발생: " + e.getMessage() + " / 재시도 " + errQuit);
+	            if (errQuit > maxRetries) {
+	                System.out.println("최대 재시도 횟수 초과, 종료 시도 중단");
+	                // 필요 시 여기서 예외 throw 하거나 기본 상태 유지, 종료 처리
+	                break;
+	            }
+	            // 짧은 재시도 딜레이
+	            try {
+	                Thread.sleep(5000L);
+	            } catch (InterruptedException ie) {
+	                Thread.currentThread().interrupt();
+	            }
+	        }
+	    }
+	    return webDriver;
 	}
+	
+	/*종료 시 인터럽트 발생을 조용히 처리
+
+InterruptedException 예외 시 로깅 간소화 또는 제거하고, 재귀/반복 종료 시 더 이상 재시도하지 않도록 처리
+
+restartDriver() 종료 로직 개선
+
+종료 시 시도 횟수를 제한하고 인터럽트 발생 시 즉시 종료하도록 설계
+
+Thread.sleep() 호출 횟수 최소화
+
+스프링 애플리케이션 종료 시점에 WebDriver 적절히 종료하도록 별도 관리
+
+스프링의 @PreDestroy 같은 어노테이션을 활용해 종료 시 WebDriver가 안정적으로 종료되도록 조치
+
+위치와 시점에 따라 restartDriver() 호출 분리
+
+종료와 재시작을 명확히 구분하고 종료 실패 시 재시도 제한*/
+	
 	
 	public void collectRank() {
 		
@@ -78,11 +132,10 @@ public class SearchLoofService {
 				while (retryCount < maxRetries) {
 					total_search++;
 					try {
-						if(total_search % 25 == 0 & retryCount >= 2) {
+						if(total_search % 25 == 0 || retryCount >= 2) {
 							webDriver = restartDriver();
-							Thread.sleep(7000);
 						}
-						Thread.sleep(3000);
+						Thread.sleep(3000L);
 						JavascriptExecutor jsExec = (JavascriptExecutor) webDriver;
 						String script =
 								"return fetch('https://mabinogimobile.nexon.com/Ranking/List/rankdata', {"
@@ -103,6 +156,8 @@ public class SearchLoofService {
 						Elements rankItems = doc.select("ul.list > li.item");
 						if (rankItems.isEmpty()) {
 							System.out.println("랭킹 데이터가 없습니다.");
+							retryCount++;
+							continue;
 						}
 						for (Element item : rankItems) {
 							String rankText = item.select("dl:has(dt:matches(\\d+위)) dt").text(); 
@@ -125,7 +180,7 @@ public class SearchLoofService {
 						
 						System.out.println("총 횟수 : " + total_search + "  /  " 
 								+ ClassCode.코드_직업맵.get(code) + " 페이지 : " + i);
-						retryCount =5;
+						retryCount = maxRetries;
 					} catch (InterruptedException  e) {
 						// 인터럽 복구 해줘야 한다?
 						Thread.currentThread().interrupt();
@@ -165,7 +220,7 @@ public class SearchLoofService {
 				try {
 					rankCollectService.rankCollect(1, i, 1, code, null, rankingList);
 					total_search++;
-					Thread.sleep(12000);
+					Thread.sleep(12000L);
 					System.out.println("총 횟수 : " + total_search + "  /  " 
 							+ ClassCode.코드_직업맵.get(code) + " 페이지 : " + i);
 				} catch (InterruptedException  e) {

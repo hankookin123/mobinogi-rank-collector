@@ -7,11 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class SeleniumDriverManager {
 	// 27회 검색하면 재시작됨. 유저 직접 검색 전용 셀레니움
 	private WebDriver webDriver;
@@ -39,7 +41,7 @@ public class SeleniumDriverManager {
         }
         // 필요에 따라 ChromeDriver 위치 지정
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless"); // 필요 시 제거해 디버깅 가능
+        //options.addArguments("--headless"); // 필요 시 제거해 디버깅 가능
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("user-agent=Mozilla/5.0"); 
