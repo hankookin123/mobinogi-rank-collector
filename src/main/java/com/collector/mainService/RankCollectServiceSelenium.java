@@ -8,6 +8,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dto.rank.RankingListDto;
@@ -15,6 +16,7 @@ import com.collector.etc.ClassCode;
 import com.collector.etc.SeleniumDriverManager;
 
 @Service
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class RankCollectServiceSelenium {
 	// 싱글톤으로 작동. 요청온 순서대로 크롤링.
     private static final Logger logger = LoggerFactory.getLogger(RankCollectServiceSelenium.class);

@@ -7,11 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class SeleniumDriverManager {
 	// 27회 검색하면 재시작됨. 유저 직접 검색 전용 셀레니움
 	private WebDriver webDriver;

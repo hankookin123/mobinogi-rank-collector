@@ -14,6 +14,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dao.RankDao;
@@ -22,6 +23,7 @@ import com.collector.etc.ClassCode;
 
 // DB에 등록하는곳
 @Service
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class SearchLoofService {
 	
 	private RankCollectService rankCollectService;

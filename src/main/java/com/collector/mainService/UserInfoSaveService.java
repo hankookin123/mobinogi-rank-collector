@@ -1,5 +1,6 @@
 package com.collector.mainService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dao.RankDao;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class UserInfoSaveService {
 	
 	private RankingListDto dto;
