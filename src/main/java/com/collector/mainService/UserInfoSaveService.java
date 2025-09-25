@@ -1,5 +1,6 @@
 package com.collector.mainService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dao.RankDao;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class UserInfoSaveService {
 	
 	private RankingListDto dto;
@@ -18,7 +20,7 @@ public class UserInfoSaveService {
 	public void userInfoSave( int s, String search) {
 		// (int t, int pageno, int s, int c, String search, int searchCount)
 		try {
-			dto = rankCollectServiceSelenium.userInfo(1, 0, s, 0, search);
+			//dto = rankCollectServiceSelenium.userInfo(1, 0, s, 0, search);
 			// 유저정보 인서트 하려면 db테이블 먼저 만들고 삽입 해야함.
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

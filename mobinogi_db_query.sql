@@ -278,3 +278,36 @@ left join (select * from deian_server where data_date = '2025-07-13' and job_id 
 where d.c_p_rank is null;
 
 update deian_server set data_date = '2025-07-14' where data_date = '2025-07-15';
+
+
+
+-- ---------------------------------
+-- mapper test
+SELECT
+	        id ID,
+	        data_date 날짜,
+	        server_id 서버,
+	        job_id 직업,
+	        power_top 1등,
+	        power_bottom 1000등,
+	        power_median 500등,
+	        power_average 평균,
+	        power_total 총합,
+	        power_var 분산,
+	        power_sd 표준편차
+	    FROM daily_power
+	    WHERE data_date >= '2025-08-02';
+        
+        
+-- 주 단위
+SELECT job_id,
+       DATE_FORMAT(data_date, '%Y-%u') AS week,
+       AVG(power_average) AS avg_power,
+       AVG(power_median) AS median_power,
+       AVG(power_top) AS top_power,
+       AVG(power_bottom) AS bottom_power,
+       AVG(power_sd) AS sd_power
+FROM daily_power
+WHERE data_date >= '2025-08-01'
+GROUP BY job_id, week
+ORDER BY week;

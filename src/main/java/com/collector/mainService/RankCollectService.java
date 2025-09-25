@@ -13,12 +13,14 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.collector.dto.rank.RankingListDto;
 
 // 홈페이지에서 데이터 긁어옴.
 @Service
+@ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class RankCollectService {
 	
 	@Value("${COOKIE_INFO}") private String cookie_info;
