@@ -25,14 +25,14 @@ import jakarta.annotation.PreDestroy;
 @Configuration
 public class SshTunnelConfig {
 
-//	@Value("${ssh.host}") private String sshHost;
-//    @Value("${ssh.port}") private int sshPort;
-//    @Value("${ssh.user}") private String sshUser;
-//    @Value("${ssh.privateKey}") private String sshPrivateKey;
-//    @Value("${ssh.keyPassphrase:}") private String sshKeyPassphrase;
-//    @Value("${ssh.localPort}") private int sshLocalPort;
-//    @Value("${ssh.remoteHost}") private String sshRemoteHost;
-//    @Value("${ssh.remotePort}") private int sshRemotePort;
+	@Value("${ssh.host}") private String sshHost;
+    @Value("${ssh.port}") private int sshPort;
+    @Value("${ssh.user}") private String sshUser;
+    @Value("${ssh.privateKey}") private String sshPrivateKey;
+    @Value("${ssh.keyPassphrase:}") private String sshKeyPassphrase;
+    @Value("${ssh.localPort}") private int sshLocalPort;
+    @Value("${ssh.remoteHost}") private String sshRemoteHost;
+    @Value("${ssh.remotePort}") private int sshRemotePort;
 
     @Value("${spring.datasource.driver-class-name}") private String driverClassName;
     @Value("${spring.datasource.url}") private String jdbcUrl;

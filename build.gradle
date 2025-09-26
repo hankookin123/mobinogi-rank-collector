@@ -2,17 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'war' // war 플러그인 추가
 }
 
-// ec2환경 jar 사용시 jsp 오류발생. war 도입
-bootJar {
-    enabled = false
-}
-
-bootWar {
-    enabled = true
-}
 
 
 group = 'com.mobinogi'
@@ -73,12 +64,6 @@ dependencies {
 	
 	// 셀레니움
 	implementation("org.seleniumhq.selenium:selenium-java:4.34.0")
-	
-	//war 사용으로 발생한 오류 해결용
-	//프로젝트 속성 → Project Facets에서 Dynamic Web Module 버전을 2.4 > 4.0으로 수정
-	implementation 'javax.servlet:javax.servlet-api:4.0.1'
-	implementation 'javax.servlet:jstl:1.2'
-	
 	
 }
 
