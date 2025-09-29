@@ -9,12 +9,12 @@ select * from server_code;
 select * from job_code;
 
 select count(*), job_id from deian_server where data_date = '2025-07-13' group by job_id;
-select * from deian_server where data_date = '2025-07-13';
+select * from deian_server where data_date = '2025-09-29';
+
 
 select count(*), data_date from deian_server group by data_date order by data_date desc;
 select count(*), data_date from daily_power group by data_date order by data_date desc;
-select * from daily_power;
-select count(*), data_date from daily_power group by data_date order by data_date desc;
+select count(*)/19000 from deian_server;
 
 select id ,
 	dp.data_date "날짜",
@@ -311,3 +311,56 @@ FROM daily_power
 WHERE data_date >= '2025-08-01'
 GROUP BY job_id, week
 ORDER BY week;
+
+
+-- 일별 각 직업별 캐릭터 전투력 합계
+SELECT
+    ds.data_date 날짜,
+    jc.job_name 직업,
+    SUM(ds.c_power) 전투력
+FROM deian_server ds
+left JOIN job_code jc ON ds.job_id = jc.job_id
+where data_date = '2025-09-29'
+group by ds.job_id
+order by 전투력 desc;
+
+select
+	dp.data_date 날짜,
+    jc.job_name 직업,
+    dp.power_top 1등,
+    dp.power_median 500등,
+    dp.power_bottom 1000등,
+    dp.power_total 전투력_합계,
+	ROUND(dp.power_total / MAX(CASE WHEN jc.job_name = '음유시인' THEN dp.power_total ELSE NULL END) OVER (PARTITION BY dp.data_date) * 100, 1) '종합%'
+from daily_power dp
+left join job_code jc on dp. job_id = jc.job_id
+where dp.data_date >= curdate() -  INTERVAL 7 DAY
+order by
+	날짜 desc,
+	CASE WHEN 직업 = '음유시인' THEN 1 ELSE 0 END,
+    전투력_합계 desc;
+    
+-- 가장 높은 1000등 기준
+select
+	count(ds.c_name) count_class,
+    jc.job_name job_name
+from deian_server ds
+left join job_code jc on ds.job_id = jc.job_id
+where
+	ds.c_power >= (select max(power_bottom) from daily_power where data_date = '2025-07-01')
+	AND ds.data_date = '2025-07-01'
+group by jc.job_name
+order by count_class desc;
+    
+-- 랭킹 이탈 숫자
+SELECT COUNT(*) AS 못들어온_캐릭터_수
+FROM (
+    SELECT c_name
+    FROM deian_server
+    WHERE data_date = '2025-09-07' - INTERVAL 7 DAY
+    AND c_name NOT IN (
+        SELECT c_name
+        FROM deian_server
+        WHERE data_date = '2025-09-07'
+    )
+) AS yesterday_only;

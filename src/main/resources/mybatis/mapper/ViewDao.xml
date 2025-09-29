@@ -20,4 +20,18 @@
 	    FROM daily_power
 	    WHERE data_date = #{baseTime}
     </select>
+    
+    <select id="dpTop1000Class" resultType="com.collector.dto.rank.DpTop1000ClassDto">
+    	SELECT
+			count(ds.c_name) count_class,
+		    jc.job_name job_name,
+		    ds.data_date data_date
+		FROM deian_server ds
+		LEFT JOIN job_code jc ON ds.job_id = jc.job_id
+		WHERE
+			ds.c_power >= (SELECT max(power_bottom) FROM daily_power WHERE data_date = #{baseTime})
+			AND ds.data_date = #{baseTime}
+		GROUP BY jc.job_name
+		ORDER BY count_class DESC
+    </select>
 </mapper>
