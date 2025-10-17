@@ -11,14 +11,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @Component
 @ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
 public class SeleniumDriverManager {
-	// 27회 검색하면 재시작됨. 유저 직접 검색 전용 셀레니움
+	// 25회 검색하면 재시작됨. 유저 직접 검색 전용 셀레니움
 	private WebDriver webDriver;
     private final AtomicInteger requestCount = new AtomicInteger(0);
-    private final int MAX_REQUESTS = 27; // 27번 요청마다 재시작
+    private final int MAX_REQUESTS = 25; // 25번 요청마다 재시작
 	 
     @PostConstruct
     public void init() {
@@ -26,7 +27,7 @@ public class SeleniumDriverManager {
     }
 
     public synchronized WebDriver getWebDriver() {
-        // 27회 초과 시 재시작
+        // 25회 초과 시 재시작
         if (requestCount.incrementAndGet() > MAX_REQUESTS) {
             restartBrowser();
         }else if (webDriver == null) {
@@ -59,6 +60,7 @@ public class SeleniumDriverManager {
         launchBrowser();
     }
 
+    @PreDestroy // 스프링 종료될때 자동실행 어노테이션.
     public synchronized void shutdown() {
         if (webDriver != null) {
             webDriver.quit();

@@ -9,7 +9,7 @@ select * from server_code;
 select * from job_code;
 
 select count(*), job_id from deian_server where data_date = '2025-07-13' group by job_id;
-select * from deian_server where data_date = '2025-09-29';
+select * from deian_server where data_date = '2025-10-17';
 
 
 select count(*), data_date from deian_server group by data_date order by data_date desc;
@@ -171,6 +171,7 @@ INSERT INTO job_code (job_id, job_name) VALUES (1443648579, '도적');
 INSERT INTO job_code (job_id, job_name) VALUES (1790463651, '격투가');
 INSERT INTO job_code (job_id, job_name) VALUES (1957076952, '듀얼블레이드');
 INSERT INTO job_code (job_id, job_name) VALUES (589957914, '전격술사');
+INSERT INTO job_code (job_id, job_name) VALUES (1063887341, '암흑술사');
 
 INSERT INTO server_code (server_id, server_name) VALUES (1, '데이안');
 INSERT INTO server_code (server_id, server_name) VALUES (2, '아이라');

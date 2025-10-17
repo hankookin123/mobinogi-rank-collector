@@ -30,6 +30,7 @@ public class ClassCode {
 	public static final int 도적 = 1443648579 ;
 	public static final int 격투가 = 1790463651 ;
 	public static final int 듀얼블레이드 = 1957076952 ;
+	public static final int 암흑술사 = 1063887341 ;
 	
 	public static final int 데이안 = 1;
 	public static final int 아이라 = 2;
@@ -42,7 +43,7 @@ public class ClassCode {
 	//Arrays.asList 사용하면 add, remove 사용 불가, set으로 변경은 가능.
 	// 직업코드리스트 지워도 됨.
 	public static final List<Integer> 직업코드리스트 = Arrays.asList(
-			전사, 대검전사, 검술사, 궁수, 석궁사수, 장궁병, 마법사, 화염술사, 빙결술사, 전격술사,
+			전사, 대검전사, 검술사, 궁수, 석궁사수, 장궁병, 마법사, 화염술사, 빙결술사, 전격술사, 암흑술사,
 	        힐러, 사제, 수도사, 음유시인, 댄서, 악사, 도적, 격투가, 듀얼블레이드
 			);
 	
@@ -60,6 +61,7 @@ public class ClassCode {
         직업_코드맵.put("화염술사", 화염술사);
         직업_코드맵.put("빙결술사", 빙결술사);
         직업_코드맵.put("전격술사", 전격술사);
+        직업_코드맵.put("암흑술사", 암흑술사);
         직업_코드맵.put("힐러", 힐러);
         직업_코드맵.put("사제", 사제);
         직업_코드맵.put("수도사", 수도사);

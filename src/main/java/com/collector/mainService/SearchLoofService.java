@@ -21,6 +21,8 @@ import com.collector.dao.RankDao;
 import com.collector.dto.rank.RankingListDto;
 import com.collector.etc.ClassCode;
 
+import jakarta.annotation.PreDestroy;
+
 // DB에 등록하는곳
 @Service
 @ConditionalOnProperty(name = "DEVICE_ID", havingValue = "web_craw_pc")
@@ -96,6 +98,14 @@ public class SearchLoofService {
 	    return webDriver;
 	}
 	
+	@PreDestroy // 스프링 종료될때 자동실행 어노테이션.
+    public void shutdown() {
+        if (webDriver != null) {
+            webDriver.quit();
+        }
+        webDriver = null;
+    }
+	
 	/*종료 시 인터럽트 발생을 조용히 처리
 
 InterruptedException 예외 시 로깅 간소화 또는 제거하고, 재귀/반복 종료 시 더 이상 재시도하지 않도록 처리
@@ -122,77 +132,86 @@ Thread.sleep() 호출 횟수 최소화
 		
 		// 데이안서버(서버번호: 1)의 데이터만 수집.
 		int total_search = 0; //총 검색 횟수
-		webDriver = getDriver();						
 		
-		for (Integer code : ClassCode.직업_코드맵.values()) {
-			List<RankingListDto> rankingList = new ArrayList<>();
-			for (int i = 1; i <= pageCount; i++) {
-				int maxRetries = 3;
-			    int retryCount = 0;
-				while (retryCount < maxRetries) {
-					total_search++;
-					try {
-						if(total_search % 25 == 0 || retryCount >= 2) {
-							webDriver = restartDriver();
-						}
-						Thread.sleep(3000L);
-						JavascriptExecutor jsExec = (JavascriptExecutor) webDriver;
-						String script =
-								"return fetch('https://mabinogimobile.nexon.com/Ranking/List/rankdata', {"
-										+ "method: 'POST',"
-										+ "headers: {"
-										+ "'Content-Type': 'application/x-www-form-urlencoded',"
-										+ "'X-Requested-With': 'XMLHttpRequest',"
-										+ "'Origin': 'https://mabinogimobile.nexon.com',"
-										+ "'Referer': 'https://mabinogimobile.nexon.com/Ranking/List'"
-										+ "},"
-										+ "body: 't=" + 1 + "&pageno=" + i + "&s=" + 1 + "&c=" + code + "&search='"
-										+ "}).then(response => response.text());";
-						// (1, i, 1, code, null, rankingList)
-						String responseHtml = (String) jsExec.executeScript(script);
-						
-						Document doc = Jsoup.parse(responseHtml);
-						
-						Elements rankItems = doc.select("ul.list > li.item");
-						if (rankItems.isEmpty()) {
-							System.out.println("랭킹 데이터가 없습니다.");
+		// WebDriver를 메서드 지역 변수로 선언하고 try-with-resources 또는 try-finally로 관리
+	    // 이 메서드에서는 WebDriver를 클래스 필드로 유지해야 하므로 try-finally 사용
+		this.webDriver = getDriver();	
+		
+		try {
+			for (Integer code : ClassCode.직업_코드맵.values()) {
+				List<RankingListDto> rankingList = new ArrayList<>();
+				for (int i = 1; i <= pageCount; i++) {
+					int maxRetries = 3;
+				    int retryCount = 0;
+					while (retryCount < maxRetries) {
+						total_search++;
+						try {
+							if(total_search % 25 == 0 || retryCount >= 2) {
+								webDriver = restartDriver();
+							}
+							Thread.sleep(3000L);
+							JavascriptExecutor jsExec = (JavascriptExecutor) webDriver;
+							String script =
+									"return fetch('https://mabinogimobile.nexon.com/Ranking/List/rankdata', {"
+											+ "method: 'POST',"
+											+ "headers: {"
+											+ "'Content-Type': 'application/x-www-form-urlencoded',"
+											+ "'X-Requested-With': 'XMLHttpRequest',"
+											+ "'Origin': 'https://mabinogimobile.nexon.com',"
+											+ "'Referer': 'https://mabinogimobile.nexon.com/Ranking/List'"
+											+ "},"
+											+ "body: 't=" + 1 + "&pageno=" + i + "&s=" + 1 + "&c=" + code + "&search='"
+											+ "}).then(response => response.text());";
+							// (1, i, 1, code, null, rankingList)
+							String responseHtml = (String) jsExec.executeScript(script);
+							
+							Document doc = Jsoup.parse(responseHtml);
+							
+							Elements rankItems = doc.select("ul.list > li.item");
+							if (rankItems.isEmpty()) {
+								System.out.println("랭킹 데이터가 없습니다.");
+								retryCount++;
+								continue;
+							}
+							int checkRank = 0;
+							for (Element item : rankItems) {
+								String rankText = item.select("dl:has(dt:matches(\\d+위)) dt").text(); 
+								int rank = Integer.parseInt(rankText.replaceAll("[^\\d]", "")); 
+								String server = item.select("dl:has(dt:matches(서버명)) dd").text(); 
+								String charName = item.select("dl:has(dt:matches(캐릭터명)) dd").attr("data-charactername"); 
+								String clazz = item.select("dl:has(dt:matches(클래스)) dd").text(); 
+								String power_str = item.select("dl:has(dt:matches(전투력)) dd").text();
+								
+								power_str = power_str.replace(",", "");
+								int power_int = Integer.parseInt(power_str);
+								
+								// dto는 캐릭터 하나하나의 데이터, rankingList는 어레이리스트.
+								RankingListDto dto = new RankingListDto(rank, 1, charName, code, power_int);
+								rankingList.add(dto);
+//								System.out.printf("%s, %s,  %s, %s, %s\n", rank, server, charName, clazz,
+//										power_int);
+								checkRank = rank;
+							}
+							
+							System.out.println("총 횟수 : " + total_search + "  /  " 
+									+ ClassCode.코드_직업맵.get(code) + " 페이지 : " + i
+									+ "검색 랭크 : " + checkRank);
+							retryCount = maxRetries;
+						} catch (InterruptedException  e) {
+							// 인터럽 복구 해줘야 한다?
+							Thread.currentThread().interrupt();
+						} catch (Exception e) {
 							retryCount++;
-							continue;
+							e.printStackTrace();
 						}
-						for (Element item : rankItems) {
-							String rankText = item.select("dl:has(dt:matches(\\d+위)) dt").text(); 
-							int rank = Integer.parseInt(rankText.replaceAll("[^\\d]", "")); 
-							String server = item.select("dl:has(dt:matches(서버명)) dd").text(); 
-							String charName = item.select("dl:has(dt:matches(캐릭터명)) dd").attr("data-charactername"); 
-							String clazz = item.select("dl:has(dt:matches(클래스)) dd").text(); 
-							String power_str = item.select("dl:has(dt:matches(전투력)) dd").text();
-							
-							power_str = power_str.replace(",", "");
-							int power_int = Integer.parseInt(power_str);
-							
-							// dto는 캐릭터 하나하나의 데이터, rankingList는 어레이리스트.
-							RankingListDto dto = new RankingListDto(rank, 1, charName, code, power_int);
-							rankingList.add(dto);
-							System.out.printf("%s, %s,  %s, %s, %s\n", rank, server, charName, clazz,
-									power_int);
-							
-						}
-						
-						System.out.println("총 횟수 : " + total_search + "  /  " 
-								+ ClassCode.코드_직업맵.get(code) + " 페이지 : " + i);
-						retryCount = maxRetries;
-					} catch (InterruptedException  e) {
-						// 인터럽 복구 해줘야 한다?
-						Thread.currentThread().interrupt();
-					} catch (Exception e) {
-						retryCount++;
-						e.printStackTrace();
 					}
+					
 				}
 				
+				dao.deianInsert(rankingList);
 			}
-			
-			dao.deianInsert(rankingList);
+		} finally {
+			this.shutdown();
 		}		
 		
 		LocalDateTime now2 = LocalDateTime.now();

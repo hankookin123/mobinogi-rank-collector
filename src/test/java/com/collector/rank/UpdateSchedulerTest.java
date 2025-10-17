@@ -58,6 +58,14 @@ public class UpdateSchedulerTest {
     }
     
     @Test
+    public void seleniumCollectorTest() {
+    	System.out.println("-----  테스트 시작  ------");
+    	searchLoofService.collectRank();
+    	rankDao.generateDailyPowerStats();
+    	System.out.println("-----  테스트 종료  ------");
+    }
+    
+    @Test
     public void errRankCollecte() {
     	List<RankingListDto> rankingList = new ArrayList<>();
     	try {

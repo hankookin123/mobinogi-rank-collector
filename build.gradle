@@ -66,6 +66,9 @@ dependencies {
 	// 셀레니움
 	implementation("org.seleniumhq.selenium:selenium-java:4.34.0")
 	
+	// @PreDestroy 사용을 위한 라이브러리
+	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+	
 }
 
 tasks.named('test') {
